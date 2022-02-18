@@ -1,0 +1,226 @@
+openapi: 3.0.1
+info:
+  title: YLEM Mobile Backend API
+  version: "1.0"
+servers:
+- url: /
+paths:
+  /auth:
+    post:
+      tags:
+      - Auth
+      summary: Authorize a user and generate an auth token.
+      description: Authorize a user.
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+        required: false
+      responses:
+        200:
+          description: User authorized successfully.
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        403:
+          description: Unauthorized.
+          content: {}
+        500:
+          description: Backend error.
+          content: {}
+  /gen-forecasts:
+    post:
+      tags:
+      - Forecasting
+      summary: Sends a energy generation forecast.
+      description: Submit a new energy generation forecast.
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/GenOrLoadForecast'
+        required: false
+      responses:
+        201:
+          description: Gen forecast submitted successfully.
+          content: 
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GenOrLoadForecastResponse'
+        403:
+          description: Unauthorized.
+          content: {}
+        500:
+          description: Backend error.
+          content: {}
+      security:
+      - Bearer: []
+      
+  /gen-forecasts/{forecastId}:
+    put:
+      tags:
+      - Forecasting
+      summary: Updates an energy generation forecast.
+      description: Submit an update to an existing energy generation forecast.
+      parameters:
+        - name: forecastId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/GenOrLoadForecast'
+        required: false
+      responses:
+        201:
+          description: Gen forecast submitted successfully.
+          content: 
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GenOrLoadForecastResponse'
+        403:
+          description: Unauthorized.
+          content: {}
+        500:
+          description: Backend error.
+          content: {}
+      security:
+      - Bearer: []
+      
+  
+  /load-forecasts:
+    post:
+      tags:
+      - Forecasting
+      summary: Sends a energy usage forecast.
+      description: Submit a new energy usage forecast.
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/GenOrLoadForecast'
+        required: false
+      responses:
+        201:
+          description: Gen forecast updated successfully.
+          content: 
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GenOrLoadForecastResponse'
+        403:
+          description: Unauthorized.
+          content: {}
+        500:
+          description: Backend error.
+          content: {}
+      security:
+      - Bearer: []
+  /load-forecasts/{forecastId}:
+    put:
+      tags:
+      - Forecasting
+      summary: Updates an energy usage forecast.
+      description: Submit an update to an existing energy usage forecast.
+      parameters:
+        - name: forecastId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/GenOrLoadForecast'
+        required: false
+      responses:
+        201:
+          description: Load forecast submitted successfully.
+          content: 
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GenOrLoadForecastResponse'
+        403:
+          description: Unauthorized.
+          content: {}
+        500:
+          description: Backend error.
+          content: {}
+      security:
+      - Bearer: []
+
+  /balances:
+    get:
+      tags:
+      - FIAT
+      summary: Retrieve FIAT token balance for user.
+      description: Retrieve FIAT token balance for user.
+      responses:
+        201:
+          description: User FIAT balance.
+          content: 
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/FiatBalanceResponse'
+        403:
+          description: Unauthorized.
+          content: {}
+        500:
+          description: Backend error.
+          content: {}
+      security:
+      - Bearer: [] 
+
+components:
+  schemas:
+    AuthRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username.
+        password:
+          type: string
+          description: Password.
+    AuthResponse:
+      type: object
+      properties:
+        authToken:
+          type: string
+          description: Authorization Token.
+    GenOrLoadForecast:
+      type: object
+      properties:
+        timeslot:
+          type: string
+          description: Timeslot the energy is being generated for/used in.
+        energyQuantity:
+          type: integer
+    GenOrLoadForecastResponse:
+      type: object
+      properties:
+        forecastId:
+          type: string
+          description: Forecast ID.
+        timeslot:
+          type: string
+          description: Timeslot the energy is being generated for/used in.
+    FiatBalanceResponse:
+      type: object
+      properties:
+        balance: 
+          type: number
+          description: FIAT balance amount.
+          
+        
+    
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header
