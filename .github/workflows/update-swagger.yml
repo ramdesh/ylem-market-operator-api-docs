@@ -30,7 +30,7 @@ jobs:
           # Move index.html to the root
           mv dist/index.html .
           # Fix references in index.html
-          sed -i "s|https://petstore.swagger.io/v2/swagger.json|$SWAGGER_YAML|g" index.html
+          sed -i "s|https://ramdesh.github.io/ylem-market-operator-api-docs/swagger.yaml|$SWAGGER_YAML|g" index.html
           sed -i "s|href=\"./|href=\"dist/|g" index.html
           sed -i "s|src=\"./|src=\"dist/|g" index.html
           # Update current release
